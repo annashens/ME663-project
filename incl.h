@@ -1,0 +1,21 @@
+      PARAMETER(NX=100,NY=100)
+      COMMON/VARS/
+     &U(-2:NX,-2:NY),V(-2:NX,-2:NY),P(-2:NX,-2:NY),
+     &F(-2:NX,-2:NY),G(-2:NX,-2:NY)   
+      COMMON/GEOM/
+     &X(-2:NX,-2:NY),Y(-2:NX,-2:NY)
+      COMMON/PLOT/
+     &UC(NX,NY),VC(NX,NY)
+      COMMON/COEF/
+     &APU(-2:NX,-2:NY),APV(-2:NX,-2:NY),APP(-2:NX,-2:NY), 
+     &AEU(-2:NX,-2:NY),AEV(-2:NX,-2:NY),AEP(-2:NX,-2:NY),
+     &AWU(-2:NX,-2:NY),AWV(-2:NX,-2:NY),AWP(-2:NX,-2:NY),
+     &ANU(-2:NX,-2:NY),ANV(-2:NX,-2:NY),ANP(-2:NX,-2:NY),
+     &ASU(-2:NX,-2:NY),ASV(-2:NX,-2:NY),ASP(-2:NX,-2:NY),
+     & BU(-2:NX,-2:NY), BV(-2:NX,-2:NY), BP(-2:NX,-2:NY) 
+      COMMON/PARA/
+     &NI,NJ,Ihalo,Jhalo,MAXIT,N,
+     &DX,DY,DT,
+     &RE,URFU,URFV,URFP,
+     &NSWPU,NSWPV,NSWPP,
+     &RESORU,RESORV,RESORM,SORMAX,TIME
