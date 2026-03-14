@@ -1,0 +1,32 @@
+#!/bin/sh
+cd "${0%/*}" || exit 1   # Ensure script runs from its own directory
+
+# --- Prompt user ---
+printf "Enter case index: "
+read i
+
+printf "Enter solver tag (e.g., uds2, uds4, cds2, cds4, hybrid2): "
+read tag
+
+# Build solver filename automatically
+solver="nas2d_${tag}.f"
+
+d=$(date +%d%b%Y | tr '[:upper:]' '[:lower:]')
+
+# --- Directory structure ---
+dir="case_data/${i}_${tag}"
+mkdir -p "${dir}"
+
+# --- Compile ---
+echo "Compiling $solver ..."
+gfortran -ffixed-form -ffixed-line-length-none -fcheck=bounds -g "$solver" -o cavity \
+    || { echo "Compile failed"; exit 1; }
+
+# --- Run and log ---
+echo "Running case ${i} with solver ${tag}..."
+./cavity 2>&1 | tee run.log
+
+# --- Store logs ---
+mv run.log "${dir}/${i}_run.log"
+mv result.dat "${dir}/${i}_result.dat"
+echo "Done. Logs stored in ${dir}"
