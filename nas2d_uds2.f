@@ -104,11 +104,35 @@ c
       include 'incl.h'
 c
       ENTRY MODU
-
+      REAL ULID
+      ULID = 1.0
+      DO I=1, NI
+            ! South boundary 
+            U(I,0)=-U(I,1) ! no-slip
+            ! North boundary
+            U(I,NJ+1)=2*ULID-U(I,NJ)
+      END DO 
+      DO J=1, NJ
+            ! West boundary
+            U(0,J)=0 ! no-slip
+            ! East boundary
+            U(NI,J)=0
+      END DO
       RETURN
 c
       ENTRY MODV
-
+      DO I=1, NI
+            ! South boundary 
+            V(I,0)=0
+            ! North boundary
+            V(I,NJ)=0
+      END DO 
+      DO J=1, NJ
+            ! West boundary
+            V(0,J)=-V(1,J) ! no-slip
+            ! East boundary
+            V(NI+1,J)=-V(NI,J)
+      END DO
       RETURN
 c
       ENTRY MODP
@@ -131,10 +155,14 @@ c
       DO J=1,NJ
       DO I=1,NI-1
 c
-      AEU(I,J)=
-      AWU(I,J)=
-      ANU(I,J)=
-      ASU(I,J)=
+      FEU = DY*(0.5*U(I + 1, J) + 0.5*U(I, J))
+      FWU = DY*(0.5*U(I - 1, J) + 0.5*U(I, J))
+      FNU = DX*(0.5*V(I + 1, J) + 0.5*V(I, J))
+      FSU = DX*(0.5*V(I + 1, J - 1) + 0.5*V(I, J - 1))
+      AEU(I,J)=(1/RE)*DY/DX + MAX(0.0, -FEU)
+      AWU(I,J)=(1/RE)*DY/DX + MAX(0.0, FWU)
+      ANU(I,J)=(1/RE)*DX/DY + MAX(0.0, -FNU)
+      ASU(I,J)=(1/RE)*DX/DY + MAX(0.0, FSU)
 c
       END DO
       END DO
@@ -144,7 +172,13 @@ c
       DO J=1,NJ
       DO I=1,NI-1
       APU(I,J)=AEU(I,J)+AWU(I,J)+ANU(I,J)+ASU(I,J)
-        F(I,J)=
+        F(I,J)= DT/(DX*DY)*(
+     &    (-APU(I,J)+(DX*DY)/DT)*U(I,J)
+     &    + AEU(I,J)*U(I + 1, J)
+     &    + AWU(I,J)*U(I - 1, J)
+     &    + ANU(I,J)*U(I, J + 1)
+     &    + ASU(I,J)*U(I, J - 1) 
+     &  )     
       END DO
       END DO
 c
@@ -155,11 +189,14 @@ c
 c
       DO J=1,NJ-1
       DO I=1,NI
-c
-      AEV(I,J)=
-      AWV(I,J)=
-      ANV(I,J)=
-      ASV(I,J)=
+      FEV = DY*(0.5*U(I, J + 1) + 0.5*U(I, J))
+      FWV = DY*(0.5*U(I - 1, J + 1) + 0.5*U(I - 1, J))
+      FNV = DX*(0.5*V(I, J + 1) + 0.5*V(I, J))
+      FSV = DX*(0.5*V(I, J - 1) + 0.5*V(I, J))
+      AEV(I,J)= (1/RE)*DY/DX + MAX(0.0, -FEV)
+      AWV(I,J)= (1/RE)*DY/DX + MAX(0.0, FWV)
+      ANV(I,J)= (1/RE)*DX/DY + MAX(0.0, -FNV)
+      ASV(I,J)= (1/RE)*DX/DY + MAX(0.0, FSV)
 c
       END DO
       END DO
@@ -169,7 +206,13 @@ c
       DO J=1,NJ-1
       DO I=1,NI
       APV(I,J)=AEV(I,J)+AWV(I,J)+ANV(I,J)+ASV(I,J)
-        G(I,J)=
+        G(I,J)= DT/(DX*DY)*(
+     &  (-APV(I,J)+(DX*DY)/DT)*V(I,J)
+     &    + AEV(I,J)*V(I + 1, J)
+     &    + AWV(I,J)*V(I - 1, J)
+     &    + ANV(I,J)*V(I, J + 1)
+     &    + ASV(I,J)*V(I, J - 1)
+     &  )  
       END DO
       END DO
 c
@@ -180,16 +223,17 @@ c
 c
       DO J=1,NJ
       DO I=1,NI
-      AEP(I,J)=
-      AWP(I,J)=
-      ANP(I,J)=
-      ASP(I,J)=
+      AEP(I,J) = (DY/DX)*DT
+      AWP(I,J) = (DY/DX)*DT
+      ANP(I,J) = (DX/DY)*DT
+      ASP(I,J) = (DX/DY)*DT
       END DO
       END DO
 c
       CALL MODP
 c
       DO J=1,NJ
+
       DO I=1,NI
       APP(I,J)=AEP(I,J)+AWP(I,J)+ANP(I,J)+ASP(I,J)
        BP(I,J)=
