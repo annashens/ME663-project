@@ -8,10 +8,10 @@
      &UC(NX,NY),VC(NX,NY)
       COMMON/COEF/
      &APU(-2:NX,-2:NY),APV(-2:NX,-2:NY),APP(-2:NX,-2:NY), 
-     &AEU(-2:NX,-2:NY),AEV(-2:NX,-2:NY),AEP(-2:NX,-2:NY),
-     &AWU(-2:NX,-2:NY),AWV(-2:NX,-2:NY),AWP(-2:NX,-2:NY),
-     &ANU(-2:NX,-2:NY),ANV(-2:NX,-2:NY),ANP(-2:NX,-2:NY),
-     &ASU(-2:NX,-2:NY),ASV(-2:NX,-2:NY),ASP(-2:NX,-2:NY),
+     &AEU(-2:NX,-2:NY),AEV(-2:NX,-2:NY),AEEU(-2:NX,-2:NY),AEEV(-2:NX,-2:NY),AEP(-2:NX,-2:NY),
+     &AWU(-2:NX,-2:NY),AWV(-2:NX,-2:NY),AWWU(-2:NX,-2:NY),AWWV(-2:NX,-2:NY),AWP(-2:NX,-2:NY),
+     &ANU(-2:NX,-2:NY),ANV(-2:NX,-2:NY),ANNU(-2:NX,-2:NY),ANNV(-2:NX,-2:NY),ANP(-2:NX,-2:NY),
+     &ASU(-2:NX,-2:NY),ASV(-2:NX,-2:NY),ASSU(-2:NX,-2:NY),ASSV(-2:NX,-2:NY),ASP(-2:NX,-2:NY),
      & BU(-2:NX,-2:NY), BV(-2:NX,-2:NY), BP(-2:NX,-2:NY) 
       COMMON/PARA/
      &NI,NJ,Ihalo,Jhalo,MAXIT,N,

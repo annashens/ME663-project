@@ -114,14 +114,18 @@ c
       DO I=1, NI
             ! South boundary 
             U(I,0)=-U(I,1) ! no-slip
+            U(I,-1)  = -U(I,2) 
             ! North boundary
             U(I,NJ+1)=2*ULID-U(I,NJ)
+            U(I,NJ+2) = 2*ULID - U(I,NJ-1)
       END DO 
       DO J=1, NJ
             ! West boundary
             U(0,J)=0 ! no-slip
+            U(-1,J)=0
             ! East boundary
             U(NI,J)=0
+            U(NI+1,J)=0
       END DO
       RETURN
 c
@@ -129,14 +133,18 @@ c
       DO I=1, NI
             ! South boundary 
             V(I,0)=0
+            V(I,-1)=0
             ! North boundary
             V(I,NJ)=0
+            V(I,NJ+1)=0
       END DO 
       DO J=1, NJ
             ! West boundary
             V(0,J)=-V(1,J) ! no-slip
+            V(-1,J)=-V(2,J)
             ! East boundary
             V(NI+1,J)=-V(NI,J)
+            V(NI+2,J) = -V(NI-1,J)
       END DO
       RETURN
 c
@@ -160,14 +168,21 @@ c
       DO J=1,NJ
       DO I=1,NI-1
 c
+      ! FACE FLUX FOR U-CV AT (I,J):
       FEU = DY*(0.5*U(I + 1, J) + 0.5*U(I, J))
       FWU = DY*(0.5*U(I - 1, J) + 0.5*U(I, J))
       FNU = DX*(0.5*V(I + 1, J) + 0.5*V(I, J))
       FSU = DX*(0.5*V(I + 1, J - 1) + 0.5*V(I, J - 1))
-      AEU(I,J)=(1/RE)*DY/DX + MAX(0.0, -FEU)
-      AWU(I,J)=(1/RE)*DY/DX + MAX(0.0, FWU)
-      ANU(I,J)=(1/RE)*DX/DY + MAX(0.0, -FNU)
-      ASU(I,J)=(1/RE)*DX/DY + MAX(0.0, FSU)
+
+      ! A COEFFICIENTS FOR U-CV AT (I,J):
+      AEU(I,J) = (1/RE)*DY/DX + 0.75*MAX(0.0, -FEU) - 0.375*MAX(0.0, FEU) + 0.125*MAX(0.0, -FWU)
+      AEEU(I,J) = -0.125*MAX(0.0, -FEU)
+      AWU(I,J) = (1/RE)*DY/DX + 0.125*MAX(0.0, FEU) - 0.375*MAX(0.0, -FWU) + 0.75*MAX(0.0, FWU)
+      AWWU(I,J) = -0.125*MAX(0.0, FWU)
+      ANU(I,J) = (1/RE)*DX/DY + 0.75*MAX(0.0, -FNU) - 0.375*MAX(0.0, FNU) + 0.125*MAX(0.0, -FSU)
+      ANNU(I,J) = -0.125*MAX(0.0, -FNU)
+      ASU(I,J) = (1/RE)*DX/DY + 0.125*MAX(0.0, FNU) - 0.375*MAX(0.0, -FSU) + 0.75*MAX(0.0, FSU)
+      ASSU(I,J) = -0.125*MAX(0.0, FSU)
 c
       END DO
       END DO
@@ -176,13 +191,18 @@ c
 c
       DO J=1,NJ
       DO I=1,NI-1
-      APU(I,J)=AEU(I,J)+AWU(I,J)+ANU(I,J)+ASU(I,J)
-        F(I,J)= DT/(DX*DY)*(
+      APU(I,J)=AEU(I,J)+AEEU(I,J)+AWU(I,J)+AWWU(I,J)
+     &        +ANU(I,J)+ANNU(I,J)+ASU(I,J)+ASSU(I,J)
+      F(I,J)= DT/(DX*DY)*(
      &    (-APU(I,J)+(DX*DY)/DT)*U(I,J)
      &    + AEU(I,J)*U(I + 1, J)
+     &    + AEEU(I,J)*U(I + 2, J)
      &    + AWU(I,J)*U(I - 1, J)
+     &    + AWWU(I,J)*U(I - 2, J)
      &    + ANU(I,J)*U(I, J + 1)
-     &    + ASU(I,J)*U(I, J - 1) 
+     &    + ANNU(I,J)*U(I, J + 2)
+     &    + ASU(I,J)*U(I, J - 1)
+     &    + ASSU(I,J)*U(I, J - 2)
      &  )     
       END DO
       END DO
@@ -194,14 +214,19 @@ c
 c
       DO J=1,NJ-1
       DO I=1,NI
+      ! FACE FLUX FOR V-CV AT (I,J):
       FEV = DY*(0.5*U(I, J + 1) + 0.5*U(I, J))
       FWV = DY*(0.5*U(I - 1, J + 1) + 0.5*U(I - 1, J))
       FNV = DX*(0.5*V(I, J + 1) + 0.5*V(I, J))
       FSV = DX*(0.5*V(I, J - 1) + 0.5*V(I, J))
-      AEV(I,J)= (1/RE)*DY/DX + MAX(0.0, -FEV)
-      AWV(I,J)= (1/RE)*DY/DX + MAX(0.0, FWV)
-      ANV(I,J)= (1/RE)*DX/DY + MAX(0.0, -FNV)
-      ASV(I,J)= (1/RE)*DX/DY + MAX(0.0, FSV)
+      AEV(I,J) = (1/RE)*DY/DX + 0.75*MAX(0.0, -FEV) - 0.375*MAX(0.0, FEV) + 0.125*MAX(0.0, -FWV)
+      AEEV(I,J) = -0.125*MAX(0.0, -FEV)
+      AWV(I,J) = (1/RE)*DY/DX + 0.125*MAX(0.0, FEV) - 0.375*MAX(0.0, -FWV) + 0.75*MAX(0.0, FWV)
+      AWWV(I,J) = -0.125*MAX(0.0, FWV)
+      ANV(I,J) = (1/RE)*DX/DY + 0.75*MAX(0.0, -FNV) - 0.375*MAX(0.0, FNV) + 0.125*MAX(0.0, -FSV)
+      ANNV(I,J) = -0.125*MAX(0.0, -FNV)
+      ASV(I,J) = (1/RE)*DX/DY + 0.125*MAX(0.0, FNV) - 0.375*MAX(0.0, -FSV) + 0.75*MAX(0.0, FSV)
+      ASSV(I,J) = -0.125*MAX(0.0, FSV)
 c
       END DO
       END DO
@@ -210,13 +235,18 @@ c
 c
       DO J=1,NJ-1
       DO I=1,NI
-      APV(I,J)=AEV(I,J)+AWV(I,J)+ANV(I,J)+ASV(I,J)
+      APV(I,J)=AEV(I,J)+AEEV(I,J)+AWV(I,J)+AWWV(I,J)
+     &        +ANV(I,J)+ANNV(I,J)+ASV(I,J)+ASSV(I,J)
         G(I,J)= DT/(DX*DY)*(
      &  (-APV(I,J)+(DX*DY)/DT)*V(I,J)
      &    + AEV(I,J)*V(I + 1, J)
+     &    + AEEV(I,J)*V(I + 2, J)
      &    + AWV(I,J)*V(I - 1, J)
+     &    + AWWV(I,J)*V(I - 2, J)
      &    + ANV(I,J)*V(I, J + 1)
+     &    + ANNV(I,J)*V(I, J + 2)
      &    + ASV(I,J)*V(I, J - 1)
+     &    + ASSV(I,J)*V(I, J - 2)
      &  )  
       END DO
       END DO
