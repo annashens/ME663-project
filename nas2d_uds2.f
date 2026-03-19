@@ -14,7 +14,12 @@ c
 c
       CALL GRID !mesh generation for a 1x1 square cavity
       CALL INIT
+      CALL CPU_TIME(t_start)
       CALL NAST2D
+      CALL CPU_TIME(t_end) 
+      t_elapsed = t_end - t_start 
+      WRITE(6,*) 'Wall-clock time (s): ', t_elapsed
+      WRITE(6,*) 'RE=',RE, ', N=', NI, ', DT=', DT
 C
       DO I=1,NI
       DO J=1,NJ
@@ -138,13 +143,13 @@ c
       ENTRY MODP
 c
       DO J=1,NJ
-      AEP(NI,J)=0.
-      AWP(1 ,J)=0.
+            AEP(NI,J)=0.
+            AWP(1 ,J)=0.
       END DO
 c
       DO I=1,NI
-      ANP(I,NJ)=0.
-      ASP(I,1 )=0.
+            ANP(I,NJ)=0.
+            ASP(I,1 )=0.
       END DO
 c
       RETURN
@@ -243,7 +248,7 @@ c
       END DO
       END DO
 c
-c SOR
+c SOR (successive over relaxation)
 c
       DO N=1,NSWPP
       RESORM=0.
