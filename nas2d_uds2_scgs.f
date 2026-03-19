@@ -258,23 +258,33 @@ c
 c SOR (successive over relaxation)
 c
       DO N=1,NSWPP
-      RESORM=0.
+      RESORM = 0.
+
+      ! Forward sweep
       DO J=1,NJ
       DO I=1,NI
-      P(I,J)=
-     &(AEP(I,J)*P(I+1,J  )+AWP(I,J)*P(I-1,J  )
-     &+ANP(I,J)*P(I  ,J+1)+ASP(I,J)*P(I  ,J-1)
-     &+BP(I,J))*URFP/APP(I,J)+(1.-URFP)*P(I,J)
-c
-      RESORM=RESORM+ABS(
-     & APP(I,J)*P(I  ,J  )
-     &-AEP(I,J)*P(I+1,J  )-AWP(I,J)*P(I-1,J  )
-     &-ANP(I,J)*P(I  ,J+1)-ASP(I,J)*P(I  ,J-1)
-     &-BP(I,J) )
+      P_old = P(I,J)
+      P(I,J) = ( AEP(I,J)*P(I+1,J) + AWP(I,J)*P(I-1,J)
+     &         + ANP(I,J)*P(I,J+1) + ASP(I,J)*P(I,J-1)
+     &         + BP(I,J) ) / APP(I,J)
+      RESORM = RESORM + ABS(P(I,J) - P_old)
       END DO
       END DO
-      IF(RESORM.LE.SORMAX) GO TO 100
+
+   ! Backward sweep
+      DO J=NJ,1,-1
+      DO I=NI,1,-1
+      P_old = P(I,J)
+      P(I,J) = ( AEP(I,J)*P(I+1,J) + AWP(I,J)*P(I-1,J)
+     &         + ANP(I,J)*P(I,J+1) + ASP(I,J)*P(I,J-1)
+     &         + BP(I,J) ) / APP(I,J)
+      RESORM = RESORM + ABS(P(I,J) - P_old)
       END DO
+      END DO
+
+      IF (RESORM .LE. SORMAX) EXIT
+      END DO
+
  100  CONTINUE
 c
       RESORU=0.

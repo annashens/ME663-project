@@ -30,4 +30,7 @@ echo "Running case ${i} with solver ${tag}..."
 # --- Store logs ---
 mv run.log "${dir}/${i}_run.log"
 mv result.dat "${dir}/${i}_result.dat"
+mkdir -p "${dir}/snaps"
+mv snap_*.dat "${dir}/snaps/"
+
 echo "Done. Logs stored in ${dir}"
