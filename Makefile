@@ -2,7 +2,7 @@ FC = gfortran
 FFLAGS = -ffixed-form -ffixed-line-length-none -fcheck=bounds -g
 
 # OBJS = global_data.o main.o calcu.o calcv.o calcp.o grid.o init.o
-OBJS = global_data.o nas2d.o 
+OBJS = global_data.o main.o nas2d.o io.o boundary.o grid_init.o	
 cavity: $(OBJS)
 	$(FC) $(OBJS) -o cavity
 
