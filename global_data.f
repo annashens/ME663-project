@@ -1,5 +1,6 @@
       MODULE global_data
-
+      IMPLICIT NONE
+      
       INTEGER, PARAMETER :: NX=100, NY=100
 
       REAL U(-2:NX,-2:NY), V(-2:NX,-2:NY), P(-2:NX,-2:NY)

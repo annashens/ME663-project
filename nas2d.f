@@ -96,71 +96,28 @@ c
       END
       SUBROUTINE CALCP
       USE global_data
-c
-      DO J=1,NJ
-      DO I=1,NI
-      AEP(I,J) = (DY/DX)*DT
-      AWP(I,J) = (DY/DX)*DT
-      ANP(I,J) = (DX/DY)*DT
-      ASP(I,J) = (DX/DY)*DT
-      END DO
-      END DO
-c
-      CALL MODP
-c
-      DO J=1,NJ
 
-      DO I=1,NI
-      APP(I,J)=AEP(I,J)+AWP(I,J)+ANP(I,J)+ASP(I,J)
-       BP(I,J)=
-     &-(F(I,J)-F(I-1,J))*DY
-     &-(G(I,J)-G(I,J-1))*DX
-c
-      END DO
-      END DO
-c
-c SOR (successive over relaxation)
-c
-      DO N=1,NSWPP
-      RESORM=0.
       DO J=1,NJ
-      DO I=1,NI
-      P(I,J)=
-     &(AEP(I,J)*P(I+1,J  )+AWP(I,J)*P(I-1,J  )
-     &+ANP(I,J)*P(I  ,J+1)+ASP(I,J)*P(I  ,J-1)
-     &+BP(I,J))*URFP/APP(I,J)+(1.-URFP)*P(I,J)
-c
-      RESORM=RESORM+ABS(
-     & APP(I,J)*P(I  ,J  )
-     &-AEP(I,J)*P(I+1,J  )-AWP(I,J)*P(I-1,J  )
-     &-ANP(I,J)*P(I  ,J+1)-ASP(I,J)*P(I  ,J-1)
-     &-BP(I,J) )
+         DO I=1,NI
+            AEP(I,J) = (DY/DX)*DT
+            AWP(I,J) = (DY/DX)*DT
+            ANP(I,J) = (DX/DY)*DT
+            ASP(I,J) = (DX/DY)*DT
+         END DO
       END DO
-      END DO
-      IF(RESORM.LE.SORMAX) GO TO 100
-      END DO
- 100  CONTINUE
-c
-      RESORU=0.
+
+      CALL MODP
+
       DO J=1,NJ
-      DO I=1,NI-1
-      RESORU=RESORU+ABS(
-     &U(I,J)-(F(I,J)+DT/DX*(P(I,J)-P(I+1,J)))
-     &)
-      U(I,J)=F(I,J)+DT/DX*(P(I,J)-P(I+1,J))
+         DO I=1,NI
+            APP(I,J)=AEP(I,J)+AWP(I,J)+ANP(I,J)+ASP(I,J)
+            BP(I,J)=-(F(I,J)-F(I-1,J))*DY
+     &             -(G(I,J)-G(I,J-1))*DX
+         END DO
       END DO
-      END DO
-c
-      RESORV=0.
-      DO J=1,NJ-1
-      DO I=1,NI
-      RESORV=RESORV+ABS(
-     &V(I,J)-(G(I,J)+DT/DY*(P(I,J)-P(I,J+1)))
-     &)
-      V(I,J)=G(I,J)+DT/DY*(P(I,J)-P(I,J+1))
-      END DO
-      END DO
-c
+
+      CALL SOR
+
       RETURN
       END
 
