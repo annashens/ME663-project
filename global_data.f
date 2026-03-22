@@ -5,12 +5,13 @@
       
       CHARACTER(LEN=10) :: SCHEME_NAME
       INTEGER :: SCHEME_ID
+      INTEGER :: TIME_SCHEME
 
       REAL U(-2:NX,-2:NY), V(-2:NX,-2:NY), P(-2:NX,-2:NY)
       REAL F(-2:NX,-2:NY), G(-2:NX,-2:NY)
-
+      REAL F_old(-2:NX, -2:NY), G_old(-2:NX,-2:NY)
+      REAL F_eff(-2:NX, -2:NY), G_eff(-2:NX,-2:NY)
       REAL X(-2:NX,-2:NY), Y(-2:NX,-2:NY)
-
       REAL UC(NX,NY), VC(NX,NY)
 
       REAL APU(-2:NX,-2:NY), APV(-2:NX,-2:NY), APP(-2:NX,-2:NY)
