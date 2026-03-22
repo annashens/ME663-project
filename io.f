@@ -35,8 +35,7 @@ c
 
       CHARACTER*30 FNAME
 
-      WRITE(FNAME,'("snap_",I6.6,".dat")') IT
-
+      WRITE(FNAME,'(A,"_snap_",I6.6,".dat")') TRIM(SCHEME_NAME), IT
       CALL WRITE_TECPLOT(FNAME, 99)
 
       RETURN
@@ -44,8 +43,9 @@ c
 c
       SUBROUTINE WRITE_RESULT
       USE global_data
-
-      CALL WRITE_TECPLOT('result.dat', 50)
-
+      CHARACTER*30 FNAME
+      WRITE(FNAME,'(A,"_result.dat")') TRIM(SCHEME_NAME)
+      CALL WRITE_TECPLOT(FNAME, 50)
+            
       RETURN
       END

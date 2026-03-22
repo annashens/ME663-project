@@ -24,4 +24,3 @@ c
  1000 CONTINUE
       RETURN
       END
-c

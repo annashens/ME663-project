@@ -4,27 +4,20 @@ cd "${0%/*}" || exit 1   # Ensure script runs from its own directory
 # --- Prompt user ---
 printf "Enter case index: "
 read i
-
-printf "Enter solver tag (e.g., uds2, uds4, cds2, cds4, hybrid2): "
-read tag
-
-# Build solver filename automatically
-solver="nas2d_${tag}.f"
-
 # --- Case metadata ---
 d=$(date +%d%b%Y | tr '[:upper:]' '[:lower:]')
 
 # --- Directory structure ---
-dir="case_data/${i}_${tag}"
+dir="case_data/${i}"
 mkdir -p "${dir}"
 
 # --- Compile ---
-echo "Compiling $solver ..."
-gfortran -ffixed-form -ffixed-line-length-none -fcheck=bounds -g "$solver" -o cavity \
-    || { echo "Compile failed"; exit 1; }
+echo "Compiling case ${i} ..."
+make clean
+make || { echo "Make failed"; exit 1; }
 
 # --- Run and log ---
-echo "Running case ${i} with solver ${tag}..."
+echo "Running case ${i} ..."
 ./cavity 2>&1 | tee run.log
 
 # --- Store logs ---
@@ -34,3 +27,4 @@ mkdir -p "${dir}/snaps"
 mv snap_*.dat "${dir}/snaps/"
 
 echo "Done. Logs stored in ${dir}"
+make clean
