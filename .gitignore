@@ -1,0 +1,23 @@
+# Compiled object files
+*.o
+
+# Fortran module files
+*.mod
+
+# Executables
+cavity
+*.exe
+
+# Output data files
+*.dat
+
+# Temporary or backup files
+*~
+*.bak
+
+# Debug files
+*.dSYM/
+*.out
+
+# VS Code settings (optional)
+.vscode/

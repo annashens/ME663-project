@@ -1,0 +1,30 @@
+#!/bin/sh
+cd "${0%/*}" || exit 1   # Ensure script runs from its own directory
+
+# --- Prompt user ---
+printf "Enter case index: "
+read i
+# --- Case metadata ---
+d=$(date +%d%b%Y | tr '[:upper:]' '[:lower:]')
+
+# --- Directory structure ---
+dir="case_data/${i}"
+mkdir -p "${dir}"
+
+# --- Compile ---
+echo "Compiling case ${i} ..."
+make clean
+make || { echo "Make failed"; exit 1; }
+
+# --- Run and log ---
+echo "Running case ${i} ..."
+./cavity 2>&1 | tee run.log
+
+# --- Store logs ---
+mv run.log "${dir}/${i}_run.log"
+mv result.dat "${dir}/${i}_result.dat"
+mkdir -p "${dir}/snaps"
+mv snap_*.dat "${dir}/snaps/"
+
+echo "Done. Logs stored in ${dir}"
+make clean

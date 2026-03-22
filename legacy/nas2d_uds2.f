@@ -14,7 +14,14 @@ c
 c
       CALL GRID !mesh generation for a 1x1 square cavity
       CALL INIT
+      CALL CPU_TIME(t_start)
       CALL NAST2D
+      CALL CPU_TIME(t_end) 
+      t_elapsed = t_end - t_start 
+      WRITE(6,*) 'Wall-clock time (s): ', t_elapsed
+      WRITE(6,*) 'RE=',RE, ', N=', NI, ', DT=', DT
+      TIME = IT*DT
+      WRITE(*,*) 'Reached steady state at IT =',IT,'  TIME =',TIME
 C
       DO I=1,NI
       DO J=1,NJ
@@ -87,9 +94,14 @@ c
       CALL CALCU
       CALL CALCV
       CALL CALCP
+c --- transient snapshot every NTRANS iterations
+      NTRANS = 100
+      IF (MOD(IT,NTRANS).EQ.0) THEN
+         CALL WRITE_SNAPSHOT(IT)
+      END IF
 c
       IF(MOD(IT,25).EQ.0) THEN
-      WRITE(*,*)IT,N,RESORM,RESORU,RESORV
+         WRITE(*,*) IT,N,RESORM,RESORU,RESORV
       END IF
 c
 c check steady state solutions
@@ -138,13 +150,13 @@ c
       ENTRY MODP
 c
       DO J=1,NJ
-      AEP(NI,J)=0.
-      AWP(1 ,J)=0.
+            AEP(NI,J)=0.
+            AWP(1 ,J)=0.
       END DO
 c
       DO I=1,NI
-      ANP(I,NJ)=0.
-      ASP(I,1 )=0.
+            ANP(I,NJ)=0.
+            ASP(I,1 )=0.
       END DO
 c
       RETURN
@@ -243,7 +255,7 @@ c
       END DO
       END DO
 c
-c SOR
+c SOR (successive over relaxation)
 c
       DO N=1,NSWPP
       RESORM=0.
@@ -285,5 +297,28 @@ c
       END DO
       END DO
 c
+      RETURN
+      END
+      SUBROUTINE WRITE_SNAPSHOT(IT)
+      include 'incl.h'
+      CHARACTER*30 FNAME
+      INTEGER I,J
+
+      WRITE(FNAME,'("snap_",I6.6,".dat")') IT
+      OPEN(99,FILE=FNAME)
+      WRITE(99,*) 'VARIABLES="X","Y","U","V","P"'
+      WRITE(99,*) 'ZONE F=POINT, I=',NI,', J=',NJ
+
+      DO J=1,NJ
+      DO I=1,NI
+         UC(I,J)=0.5*(U(I,J)+U(I-1,J))
+         VC(I,J)=0.5*(V(I,J)+V(I,J-1))
+         XC = 0.5*DX + (I-1)*DX
+         YC = 0.5*DY + (J-1)*DY
+         WRITE(99,*) XC,YC,UC(I,J),VC(I,J),P(I,J)
+      END DO 
+      END DO
+
+      CLOSE(99)
       RETURN
       END

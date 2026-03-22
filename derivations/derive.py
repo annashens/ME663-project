@@ -38,14 +38,21 @@ class FaceFlux:
         self.n_eq = eqs['n'].subs(subs)*self.dx
         self.s_eq = eqs['s'].subs(subs)*self.dx
 
-    def fortran_subs(self, id_fort):
-        return {
-            self.e[0]: sp.Symbol(f"FE{self.kind}({id_fort})"),
-            self.w[0]: sp.Symbol(f"FW{self.kind}({id_fort})"),
-            self.n[0]: sp.Symbol(f"FN{self.kind}({id_fort})"),
-            self.s[0]: sp.Symbol(f"FS{self.kind}({id_fort})"),
-        }
-
+    def fortran_subs(self, id_fort=None):
+        if id_fort:
+            return {
+                self.e[0]: sp.Symbol(f"FE{self.kind}({id_fort})"),
+                self.w[0]: sp.Symbol(f"FW{self.kind}({id_fort})"),
+                self.n[0]: sp.Symbol(f"FN{self.kind}({id_fort})"),
+                self.s[0]: sp.Symbol(f"FS{self.kind}({id_fort})"),
+            }
+        else:
+            return {
+                self.e[0]: sp.Symbol(f"FE{self.kind}"),
+                self.w[0]: sp.Symbol(f"FW{self.kind}"),
+                self.n[0]: sp.Symbol(f"FN{self.kind}"),
+                self.s[0]: sp.Symbol(f"FS{self.kind}"),
+            }
 class UDS:
     def build(self, phi, flux_cv, i, j):
 
@@ -263,17 +270,24 @@ class MomentumFVM:
         R_str = (f"B{self.kind}{self.coord["p"]}:\n"+
                  f"{self.R}")
         return label_str+velocityFlux_str+A_str+R_str
-    def _to_fortran(self, print_code=True):
+    def _to_fortran(self, print_code=True, use_id_fort=False):
 
-        id_fort = self.id_fort  # or offset+1 or whatever you want
-        subs_flux = self.flux_cv.fortran_subs(id_fort)
+
+        if use_id_fort:
+            # id_fort = self.id_fort  # or offset+1 or whatever you want
+            subs_flux = self.flux_cv.fortran_subs(self.id_fort)  
+            id = self.id_fort 
+        else:
+            subs_flux = self.flux_cv.fortran_subs()
+            id = str(self.coord["p"][0])+","+str(self.coord["p"][1])
+
 
         lines_F = [f"      ! Face Flux for {self.kind}-CV at ({self.i},{self.j}):"]
         lines_A = [f"      ! A coefficients for {self.kind}-CV at ({self.i},{self.j}):"]
         lines_B = [f"      ! B residual for {self.kind}-CV at ({self.i},{self.j}):"]
         
         
-        lines_B.append(f"   B{self.kind}({self.id_fort})={str(self.source)}")
+        lines_B.append(f"   B{self.kind}({id})={str(self.source)}")
 
         # ---- Face flux definitions ----
         flux_eqs = {
@@ -289,7 +303,7 @@ class MomentumFVM:
 
         lines_Ap=[]
         for d, expr in self.A.items():
-            A_var = f"A{d}{self.kind}({self.id_fort})"
+            A_var = f"A{d}{self.kind}({id})"
             A_expr_fort = expr.subs(subs_flux)            
             A_str = f"      {A_var} = {A_expr_fort}"
             if d!="p":
