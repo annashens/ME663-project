@@ -118,7 +118,7 @@ c
 c
       RETURN
       END
-      SUBROUTINE CALCP
+      SUBROUTINE CALCP(IT)
       USE global_data
 
       DO J=1,NJ
@@ -140,7 +140,7 @@ c
          END DO
       END DO
 
-      CALL SOR
+      CALL SOR(IT)
       
       RETURN
       END

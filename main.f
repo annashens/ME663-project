@@ -14,14 +14,14 @@ c --- Input parameters ---
       WRITE(6,*) 'MAXIT, DT, RE=?'
       READ(5,*) MAXIT, DT, RE
 
-      WRITE(*,*) 'Enter scheme (uds / quick):'
-      READ(*,*) SCHEME_NAME
-      IF (SCHEME_NAME == 'uds') THEN
-        SCHEME_ID = 1
-      ELSE IF (SCHEME_NAME == 'quick') THEN
-        SCHEME_ID = 2
+      WRITE(*,*) 'Enter scheme (uds / quick), time scheme (1 = Euler, 2 = Adams-Bashforth):'
+      READ(*,*) SCHEME_NAME, TIME_SCHEME
+      IF (TRIM(SCHEME_NAME) == 'uds') THEN
+      SCHEME_ID = 1
+      ELSE IF (TRIM(SCHEME_NAME) == 'quick') THEN
+      SCHEME_ID = 2
       ELSE
-        WRITE(*,*) 'Unknown scheme'
+      WRITE(*,*) 'Unknown scheme'
       STOP
       
       END IF
