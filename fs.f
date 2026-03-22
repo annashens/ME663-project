@@ -1,5 +1,5 @@
 
-      SUBROUTINE NAST2D
+      SUBROUTINE FS
       USE global_data
 c
       DO IT=1,MAXIT

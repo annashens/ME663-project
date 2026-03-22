@@ -1,6 +1,5 @@
       PROGRAM CAVITY
       USE global_data
-
       REAL t_start, t_end, t_elapsed
 
 c --- Input ---
@@ -14,8 +13,9 @@ c --- Input ---
       WRITE(6,*) 'MAXIT, DT, RE=?'
       READ(5,*) MAXIT, DT, RE
 
-      WRITE(*,*) 'Enter scheme (uds / quick), time scheme (1 = Euler, 2 = Adams-Bashforth):'
+      WRITE(*,*) 'Enter scheme (uds / quick)'
       READ(*,*) SCHEME_NAME, TIME_SCHEME
+
       IF (TRIM(SCHEME_NAME) == 'uds') THEN
         SCHEME_ID = 1
       ELSE IF (TRIM(SCHEME_NAME) == 'quick') THEN
@@ -24,12 +24,48 @@ c --- Input ---
         WRITE(*,*) 'Unknown scheme'
       STOP
       END IF
+
+      SOLVER_NAME = 'simple'
+      IF (TRIM(SOLVER_NAME) == 'fs') THEN
+        SCHEME_ID = 1
+      ELSE IF (TRIM(SOLVER_NAME) == 'simple') THEN
+        SCHEME_ID = 2
+      ELSE
+        WRITE(*,*) 'Unknown scheme'
+      STOP
+      END IF
+
+      SOLVER_ID = 2
+      SELECT CASE (SOLVER_ID)
+      CASE (1)
+        WRITE(*,*) 'Enter time scheme (1 = Euler, 2 = Adams-Bashforth):'
+        READ(*,*) TIME_SCHEME
+      CASE (2)  
+        NI=80
+        NJ=80
+        RE=100.
+        URFU=0.5
+        URFV=0.5
+        URFP=0.3
+        NSWPU=4
+        NSWPV=4
+        NSWPP=8
+        TIME_SCHEME=2
+       write(6,*)'URFU?'
+        read( 5,*) URFU
+        URFV=URFU
+      END SELECT
 c --- Setup ---
       CALL GRID
       CALL INIT
 c --- Solve ---
       CALL CPU_TIME(t_start)
-      CALL NAST2D
+      SELECT CASE (SOLVER_ID)
+        CASE (1)
+            CALL FS
+        CASE (2)
+            CALL SIMPLE
+      END SELECT
       CALL CPU_TIME(t_end)
       t_elapsed = t_end - t_start
 c --- Diagnostics ---

@@ -5,9 +5,12 @@
       
       CHARACTER(LEN=10) :: SCHEME_NAME
       INTEGER :: SCHEME_ID
+      CHARACTER(LEN=10) :: SOLVER_NAME
+      INTEGER :: SOLVER_ID
       INTEGER :: TIME_SCHEME
 
       REAL U(-2:NX,-2:NY), V(-2:NX,-2:NY), P(-2:NX,-2:NY)
+      REAL PP(-2:NX,-2:NY) ! presure correction field for SIMPLE
       REAL F(-2:NX,-2:NY), G(-2:NX,-2:NY)
       REAL F_old(-2:NX, -2:NY), G_old(-2:NX,-2:NY)
       REAL F_eff(-2:NX, -2:NY), G_eff(-2:NX,-2:NY)

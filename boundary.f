@@ -31,7 +31,6 @@ c
       DO I = 1, NI
          ! South boundary 
          V(I,0) = 0.0
-
          ! North boundary
          V(I,NJ) = 0.0
 
@@ -44,7 +43,6 @@ c
       DO J = 1, NJ
          ! West boundary
          V(0,J) = -V(1,J) ! no-slip
-
          ! East boundary
          V(NI+1,J) = -V(NI,J)
 

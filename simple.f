@@ -4,13 +4,13 @@ c
       DO IT=1,MAXIT
 c
 !solve u-equation
-      CALL CALCU
+      CALL SIMPLE_CALCU
 !solve v-equation
-      CALL CALCV
+      CALL SIMPLE_CALCV
 !solve p'-equation
-      CALL CALCP
+      CALL SIMPLE_CALCP
 c
-      IF(MOD(IT,100).EQ.0) THEN
+      IF(MOD(IT,50).EQ.0) THEN
       WRITE(6,51)IT,RESORU,RESORV,RESORM
       END IF
 c
