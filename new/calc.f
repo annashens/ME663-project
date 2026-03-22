@@ -9,9 +9,9 @@ c
       FWU = DY*(0.5*U(I - 1, J) + 0.5*U(I, J))
       FNU = DX*(0.5*V(I + 1, J) + 0.5*V(I, J))
       FSU = DX*(0.5*V(I + 1, J - 1) + 0.5*V(I, J - 1))
-      SELECT CASE (SCHEME_ID)
+      SELECT CASE (SCHEME_NAME)
 
-      CASE (1)  ! UDS
+      CASE ('uds')  ! UDS
 
          AEU(I,J) = (1.0/RE)*DY/DX + MAX(0.0, -FEU)
          AEEU(I,J) = 0.0
@@ -21,7 +21,7 @@ c
          ANNU(I,J) = 0.0
          ASU(I,J) = (1.0/RE)*DX/DY + MAX(0.0, FSU)
          ASSU(I,J) = 0.0
-      CASE (2)  ! QUICK
+      CASE ('quick')  ! QUICK
          AEU(I,J) = (1.0/RE)*DY/DX + 0.75*MAX(0.0, -FEU)
      &             - 0.375*MAX(0.0, FEU) + 0.125*MAX(0.0, -FWU)
          AEEU(I,J) = -0.125*MAX(0.0, -FEU)
@@ -71,8 +71,8 @@ c
       FWV = DY*(0.5*U(I - 1, J + 1) + 0.5*U(I - 1, J))
       FNV = DX*(0.5*V(I, J + 1) + 0.5*V(I, J))
       FSV = DX*(0.5*V(I, J - 1) + 0.5*V(I, J))
-      SELECT CASE (SCHEME_ID)
-      CASE (1)  ! UDS
+      SELECT CASE (SCHEME_NAME)
+      CASE ('uds')  ! UDS
             AEV(I,J)= (1/RE)*DY/DX + MAX(0.0, -FEV)
             AEEV(I,J) = 0.0
             AWV(I,J)= (1/RE)*DY/DX + MAX(0.0, FWV)
@@ -81,7 +81,7 @@ c
             ANNV(I,J) = 0.0
             ASV(I,J)= (1/RE)*DX/DY + MAX(0.0, FSV)
             ASSV(I,J) = 0.0
-      CASE (2)
+      CASE ('quick')
          AEV(I,J) = (1.0/RE)*DY/DX + 0.75*MAX(0.0, -FEV)
      &           - 0.375*MAX(0.0, FEV) + 0.125*MAX(0.0, -FWV)
          AEEV(I,J) = -0.125*MAX(0.0, -FEV)

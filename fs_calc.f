@@ -7,8 +7,8 @@ c
       FWU = DY*(0.5*U(I - 1, J) + 0.5*U(I, J))
       FNU = DX*(0.5*V(I + 1, J) + 0.5*V(I, J))
       FSU = DX*(0.5*V(I + 1, J - 1) + 0.5*V(I, J - 1))
-      SELECT CASE (SCHEME_ID)
-      CASE (1)  ! UDS
+      SELECT CASE (SCHEME_NAME)
+      CASE ('uds')  ! UDS
          AEU(I,J) = (1.0/RE)*DY/DX + MAX(0.0, -FEU)
          AEEU(I,J) = 0.0
          AWU(I,J) = (1.0/RE)*DY/DX + MAX(0.0, FWU)
@@ -17,7 +17,7 @@ c
          ANNU(I,J) = 0.0
          ASU(I,J) = (1.0/RE)*DX/DY + MAX(0.0, FSU)
          ASSU(I,J) = 0.0
-      CASE (2)  ! QUICK
+      CASE ('quick')  ! QUICK
          AEU(I,J)  = (1.0/RE)*DY/DX + 0.75*MAX(0.0, -FEU)
      &             - 0.375*MAX(0.0, FEU) + 0.125*MAX(0.0, -FWU)
          AEEU(I,J) = -0.125*MAX(0.0, -FEU)
@@ -62,8 +62,8 @@ c
       FWV = DY*(0.5*U(I - 1, J + 1) + 0.5*U(I - 1, J))
       FNV = DX*(0.5*V(I, J + 1) + 0.5*V(I, J))
       FSV = DX*(0.5*V(I, J - 1) + 0.5*V(I, J))
-      SELECT CASE (SCHEME_ID)
-      CASE (1)  ! UDS
+      SELECT CASE (SCHEME_NAME)
+      CASE ('uds')  ! UDS
             AEV(I,J)= (1/RE)*DY/DX + MAX(0.0, -FEV)
             AEEV(I,J) = 0.0
             AWV(I,J)= (1/RE)*DY/DX + MAX(0.0, FWV)
@@ -72,18 +72,18 @@ c
             ANNV(I,J) = 0.0
             ASV(I,J)= (1/RE)*DX/DY + MAX(0.0, FSV)
             ASSV(I,J) = 0.0
-      CASE (2) ! QUICK
-         AEV(I,J) = (1.0/RE)*DY/DX + 0.75*MAX(0.0, -FEV)
-     &           - 0.375*MAX(0.0, FEV) + 0.125*MAX(0.0, -FWV)
+      CASE ('quick') ! QUICK
+         AEV(I,J)  = (1.0/RE)*DY/DX + 0.75*MAX(0.0, -FEV)
+     &             - 0.375*MAX(0.0, FEV) + 0.125*MAX(0.0, -FWV)
          AEEV(I,J) = -0.125*MAX(0.0, -FEV)
-         AWV(I,J) = (1.0/RE)*DY/DX + 0.125*MAX(0.0, FEV)
-     &          - 0.375*MAX(0.0, -FWV) + 0.75*MAX(0.0, FWV)
+         AWV(I,J)  = (1.0/RE)*DY/DX + 0.125*MAX(0.0, FEV)
+     &             - 0.375*MAX(0.0, -FWV) + 0.75*MAX(0.0, FWV)
          AWWV(I,J) = -0.125*MAX(0.0, FWV)
-         ANV(I,J) = (1.0/RE)*DX/DY + 0.75*MAX(0.0, -FNV)
-     &          - 0.375*MAX(0.0, FNV) + 0.125*MAX(0.0, -FSV)
+         ANV(I,J)  = (1.0/RE)*DX/DY + 0.75*MAX(0.0, -FNV)
+     &             - 0.375*MAX(0.0, FNV) + 0.125*MAX(0.0, -FSV)
          ANNV(I,J) = -0.125*MAX(0.0, -FNV)
-         ASV(I,J) = (1.0/RE)*DX/DY + 0.125*MAX(0.0, FNV)
-     &          - 0.375*MAX(0.0, -FSV) + 0.75*MAX(0.0, FSV)
+         ASV(I,J)  = (1.0/RE)*DX/DY + 0.125*MAX(0.0, FNV)
+     &             - 0.375*MAX(0.0, -FSV) + 0.75*MAX(0.0, FSV)
          ASSV(I,J) = -0.125*MAX(0.0, FSV)
       END SELECT
       END DO
@@ -97,14 +97,10 @@ c
      &        +ANV(I,J)+ANNV(I,J)+ASV(I,J)+ASSV(I,J)
         G(I,J)= DT/(DX*DY)*(
      &  (-APV(I,J)+(DX*DY)/DT)*V(I,J)
-     &    + AEV(I,J)*V(I + 1, J)
-     &    + AEEV(I,J)*V(I + 2, J)
-     &    + AWV(I,J)*V(I - 1, J)
-     &    + AWWV(I,J)*V(I - 2, J)
-     &    + ANV(I,J)*V(I, J + 1)
-     &    + ANNV(I,J)*V(I, J + 2)
-     &    + ASV(I,J)*V(I, J - 1)
-     &    + ASSV(I,J)*V(I, J - 2)
+     &    + AEV(I,J)*V(I + 1, J) + AEEV(I,J)*V(I + 2, J)
+     &    + AWV(I,J)*V(I - 1, J) + AWWV(I,J)*V(I - 2, J)
+     &    + ANV(I,J)*V(I, J + 1) + ANNV(I,J)*V(I, J + 2)
+     &    + ASV(I,J)*V(I, J - 1) + ASSV(I,J)*V(I, J - 2)
      &  )   
       END DO
       END DO

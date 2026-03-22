@@ -1,5 +1,5 @@
 
-      SUBROUTINE NAST2D
+      SUBROUTINE FS
       USE global_data
 c
       DO IT=1,MAXIT
@@ -13,7 +13,7 @@ c --- transient snapshot every NTRANS iterations
          CALL WRITE_SNAPSHOT(IT)
       END IF
 c
-      IF(MOD(IT,25).EQ.0) THEN
+      IF(MOD(IT,5).EQ.0) THEN
          WRITE(*,*) IT,N,RESORM,RESORU,RESORV
       END IF
       ! --- store old RHS ---

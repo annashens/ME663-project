@@ -7,7 +7,7 @@
          U(I,0) = -U(I,1)   ! no-slip
          ! North boundary
          U(I,NJ+1) = 2.0 * ULID - U(I,NJ)
-         IF (SCHEME_ID .EQ. 2) THEN ! quick
+         IF (SCHEME_NAME .EQ. 'quick') THEN ! quick
             U(I,-1)   = -U(I,2)
             U(I,NJ+2) = 2.0 * ULID - U(I,NJ-1)
          END IF
@@ -17,7 +17,7 @@
          U(0,J) = 0.0   ! no-slip
          ! East boundary
          U(NI,J) = 0.0
-         IF (SCHEME_ID .EQ. 2) THEN ! quick
+         IF (SCHEME_NAME .EQ. 'quick') THEN ! quick
             U(-1,J)   = 0.0
             U(NI+1,J) = 0.0
          END IF
@@ -31,11 +31,10 @@ c
       DO I = 1, NI
          ! South boundary 
          V(I,0) = 0.0
-
          ! North boundary
          V(I,NJ) = 0.0
 
-         IF (SCHEME_ID .EQ. 2) THEN 
+         IF (SCHEME_NAME .EQ. 'quick') THEN 
             V(I,-1)   = 0.0
             V(I,NJ+1) = 0.0
          END IF
@@ -44,11 +43,10 @@ c
       DO J = 1, NJ
          ! West boundary
          V(0,J) = -V(1,J) ! no-slip
-
          ! East boundary
          V(NI+1,J) = -V(NI,J)
 
-         IF (SCHEME_ID .EQ. 2) THEN 
+         IF (SCHEME_NAME .EQ. 'quick') THEN 
             V(-1,J)   = -V(2,J)
             V(NI+2,J) = -V(NI-1,J)
          END IF

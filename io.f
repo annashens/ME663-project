@@ -10,7 +10,6 @@
 
       WRITE(UNIT,*) 'VARIABLES="X","Y","U","V","P"'
       WRITE(UNIT,*) 'ZONE F=POINT, I=',NI,', J=',NJ
-
       DO J=1,NJ
          DO I=1,NI
 
@@ -26,7 +25,6 @@
       END DO
 
       CLOSE(UNIT)
-
       RETURN
       END
 c
@@ -44,8 +42,33 @@ c
       SUBROUTINE WRITE_RESULT
       USE global_data
       CHARACTER*30 FNAME
-      WRITE(FNAME,'(A,"_result.dat")') TRIM(SCHEME_NAME)
+      IF (TRIM(SOLVER_NAME) == 'fs') THEN
+            WRITE(FNAME,'(A,A,"_",A,"_result.dat")') TRIM(SOLVER_NAME), TIME_SCHEME, TRIM(SCHEME_NAME)
+      ELSE IF (TRIM(SOLVER_NAME) == 'simple') THEN
+            WRITE(FNAME,'(A,"_",A,"_result.dat")') TRIM(SOLVER_NAME), TRIM(SCHEME_NAME)
+      ELSE
+            WRITE(FNAME,'(A)') 'result.dat'
+      END IF
       CALL WRITE_TECPLOT(FNAME, 50)
             
       RETURN
+      END
+c
+      SUBROUTINE WRITE_DIAGNOSTICS
+      USE global_data
+      WRITE(*,*) 'Solver: ', SOLVER_NAME, ', Convection scheme: ', SCHEME_NAME
+      SELECT CASE (SOLVER_NAME)
+        CASE ('fs')
+            WRITE(*,*) 'Selected Time scheme: ', TIME_SCHEME
+            WRITE(*,*) 'DT=', DT
+            TIME = IT*DT
+            WRITE(*,*) 'Reached steady state at Time = ', TIME
+        CASE ('simple')
+            WRITE(*,*) 'URFU=',URFUs
+      END SELECT
+      WRITE(*,*) 'NSWPP=', NSWPP
+      WRITE(*,*) 'URFP=',URFP
+      WRITE(*,*) 'Wall-clock time (s): ', t_elapsed
+      WRITE(*,*) 'RE=', RE
+      WRITE(*,*) 'N=', NI 
       END
