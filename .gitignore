@@ -19,3 +19,5 @@ cavity
 
 # VS Code settings (optional)
 .vscode/
+
+.DS_Store
