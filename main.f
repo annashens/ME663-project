@@ -13,8 +13,8 @@ c --- Input ---
       ! READ(*,*) SCHEME_NAME, SOLVER_NAME
       ! SOLVER_NAME = TRIM(SOLVER_NAME)
       ! SCHEME_NAME = TRIM(SCHEME_NAME)
-      SOLVER_NAME='fs'
-      SCHEME_NAME='quick'
+      SOLVER_NAME='simple'
+      SCHEME_NAME='uds'
       RE=1000
       MAXIT=999999
       SELECT CASE (SOLVER_NAME)
@@ -32,8 +32,9 @@ c --- Input ---
             NSWPU=4
             NSWPV=4
             NSWPP=8
-            write(6,*)'URFU?'
-            read( 5,*) URFU
+            
+            write(6,*)'N, URFU=?'
+            read( 5,*) NI, URFU
       END SELECT
       NJ = NI
 c --- Setup ---

@@ -1,0 +1,13 @@
+ M, URFU=?
+   50       0.00456       0.00079       0.03737
+  100       0.00164       0.00030       0.01178
+  150       0.00057       0.00010       0.00582
+  200       0.00022       0.00004       0.00207
+  250       0.00009       0.00002       0.00090
+  300       0.00004       0.00001       0.00038
+  350       0.00002       0.00000       0.00015
+ Solver: simple    , Convection scheme: uds       
+ RE=   1000.00000     , N=          16
+ URFU=   0.00000000    
+ Wall-clock time (s):    6.95900023E-02
+Note: The following floating-point exceptions are signalling: IEEE_DIVIDE_BY_ZERO
