@@ -7,10 +7,6 @@ read i
 # --- Case metadata ---
 d=$(date +%d%b%Y | tr '[:upper:]' '[:lower:]')
 
-# --- Directory structure ---
-dir="case_data/${i}"
-mkdir -p "${dir}"
-
 # --- Compile ---
 echo "Compiling case ${i} ..."
 make clean
@@ -20,11 +16,15 @@ make || { echo "Make failed"; exit 1; }
 echo "Running case ${i} ..."
 ./cavity 2>&1 | tee run.log
 
+# --- Directory structure ---
+dir="case_data/${i}"
+rm -rf "${dir}"
+mkdir -p "${dir}"
 # --- Store logs ---
 mv run.log "${dir}/${i}_run.log"
-mv result.dat "${dir}/${i}_result.dat"
+mv *result.dat "${dir}/${i}_result.dat"
 mkdir -p "${dir}/snaps"
-mv snap_*.dat "${dir}/snaps/"
+mv *_snap_*.dat "${dir}/snaps/"
 
 echo "Done. Logs stored in ${dir}"
 make clean

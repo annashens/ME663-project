@@ -8,8 +8,6 @@
 cavity
 *.exe
 
-# Output data files
-*.dat
 
 # Temporary or backup files
 *~

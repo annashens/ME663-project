@@ -33,7 +33,7 @@ c
 
       CHARACTER*30 FNAME
 
-      WRITE(FNAME,'(A,"_snap_",I6.6,".dat")') TRIM(SCHEME_NAME), IT
+      WRITE(FNAME,'("_snap_",I6.6,".dat")') IT
       CALL WRITE_TECPLOT(FNAME, 99)
 
       RETURN
@@ -42,13 +42,16 @@ c
       SUBROUTINE WRITE_RESULT
       USE global_data
       CHARACTER*30 FNAME
-      IF (TRIM(SOLVER_NAME) == 'fs') THEN
-            WRITE(FNAME,'(A,A,"_",A,"_result.dat")') TRIM(SOLVER_NAME), TIME_SCHEME, TRIM(SCHEME_NAME)
-      ELSE IF (TRIM(SOLVER_NAME) == 'simple') THEN
-            WRITE(FNAME,'(A,"_",A,"_result.dat")') TRIM(SOLVER_NAME), TRIM(SCHEME_NAME)
-      ELSE
-            WRITE(FNAME,'(A)') 'result.dat'
-      END IF
+      character(len=25) :: time_str
+      ! IF (TRIM(SOLVER_NAME) == 'fs') THEN
+      !       write(time_str, '(I0)') TIME_SCHEME
+      !       WRITE(FNAME,'(A,A,"_",A,"_result.dat")') TRIM(SOLVER_NAME), TRIM(time_str), TRIM(SCHEME_NAME)
+      ! ELSE IF (TRIM(SOLVER_NAME) == 'simple') THEN
+      !       WRITE(FNAME,'(A,"_",A,"_result.dat")') TRIM(SOLVER_NAME), TRIM(SCHEME_NAME)
+      ! ELSE
+      !       WRITE(FNAME,'(A)') 'result.dat'
+      ! END IF
+      WRITE(FNAME,'(A)') 'result.dat'
       CALL WRITE_TECPLOT(FNAME, 50)
             
       RETURN
@@ -57,18 +60,16 @@ c
       SUBROUTINE WRITE_DIAGNOSTICS
       USE global_data
       WRITE(*,*) 'Solver: ', SOLVER_NAME, ', Convection scheme: ', SCHEME_NAME
+      WRITE(*,*) 'RE=', RE, ', N=', NI
       SELECT CASE (SOLVER_NAME)
         CASE ('fs')
             WRITE(*,*) 'Selected Time scheme: ', TIME_SCHEME
             WRITE(*,*) 'DT=', DT
-            TIME = IT*DT
-            WRITE(*,*) 'Reached steady state at Time = ', TIME
         CASE ('simple')
             WRITE(*,*) 'URFU=',URFUs
       END SELECT
-      WRITE(*,*) 'NSWPP=', NSWPP
-      WRITE(*,*) 'URFP=',URFP
+      ! WRITE(*,*) 'NSWPP=', NSWPP
+      ! WRITE(*,*) 'URFP=',URFP
       WRITE(*,*) 'Wall-clock time (s): ', t_elapsed
-      WRITE(*,*) 'RE=', RE
-      WRITE(*,*) 'N=', NI 
+     
       END

@@ -1,4 +1,4 @@
-      SUBROUTINE CALCU
+      SUBROUTINE CALCU(IT)
       USE global_data
 c
       DO J=1,NJ
@@ -47,13 +47,20 @@ c
      &    + AWU(I,J)*U(I - 1, J) + AWWU(I,J)*U(I - 2, J)
      &    + ANU(I,J)*U(I, J + 1) + ANNU(I,J)*U(I, J + 2)
      &    + ASU(I,J)*U(I, J - 1) + ASSU(I,J)*U(I, J - 2)
-     &  )       
+     &  )   
+
+      IF (TIME_SCHEME.EQ.2 .AND. IT.GT.2) THEN
+      F_eff(I,J)=1.5*F(I,J)-0.5*F_old(I,J)
+      ELSE
+      F_eff(I,J)=F(I,J)
+      ENDIF
+! ====================================   
       END DO
       END DO
 c
       RETURN
       END
-      SUBROUTINE CALCV
+      SUBROUTINE CALCV(IT)
       USE global_data
 c
       DO J=1,NJ-1
@@ -86,6 +93,7 @@ c
      &             - 0.375*MAX(0.0, -FSV) + 0.75*MAX(0.0, FSV)
          ASSV(I,J) = -0.125*MAX(0.0, FSV)
       END SELECT
+      
       END DO
       END DO
 c
@@ -101,7 +109,12 @@ c
      &    + AWV(I,J)*V(I - 1, J) + AWWV(I,J)*V(I - 2, J)
      &    + ANV(I,J)*V(I, J + 1) + ANNV(I,J)*V(I, J + 2)
      &    + ASV(I,J)*V(I, J - 1) + ASSV(I,J)*V(I, J - 2)
-     &  )   
+     &  )  
+      IF (TIME_SCHEME.EQ.2 .AND. IT.GT.2) THEN
+      G_eff(I,J)=1.5*G(I,J)-0.5*G_old(I,J)
+      ELSE
+      G_eff(I,J)=G(I,J)
+      ENDIF
       END DO
       END DO
 c
@@ -125,8 +138,13 @@ c
       DO J=1,NJ
          DO I=1,NI
             APP(I,J)=AEP(I,J)+AWP(I,J)+ANP(I,J)+ASP(I,J)
+            IF (TIME_SCHEME.EQ.2 .AND. IT.GT.2) THEN ! AB2
+            BP(I,J)=-(F_eff(I,J)-F_eff(I-1,J))*DY
+     &             - (G_eff(I,J)-G_eff(I,J-1))*DX
+            ELSE
             BP(I,J)=-(F(I,J)-F(I-1,J))*DY
      &             -(G(I,J)-G(I,J-1))*DX
+            ENDIF
          END DO
       END DO
 

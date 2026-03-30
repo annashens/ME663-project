@@ -1,13 +1,15 @@
       MODULE global_data
       IMPLICIT NONE
 
-      INTEGER, PARAMETER :: NX=100, NY=100
+      INTEGER, PARAMETER :: NX=260, NY=260
       
       CHARACTER(LEN=10) :: SCHEME_NAME
       INTEGER :: SCHEME_ID
       CHARACTER(LEN=10) :: SOLVER_NAME
       INTEGER :: TIME_SCHEME
-
+      INTEGER :: NTRANS
+      REAL t_elapsed,t_start, t_end
+      LOGICAL :: diverged
       REAL U(-2:NX,-2:NY), V(-2:NX,-2:NY), P(-2:NX,-2:NY)
       REAL PP(-2:NX,-2:NY) ! presure correction field for SIMPLE
       REAL F(-2:NX,-2:NY), G(-2:NX,-2:NY)
