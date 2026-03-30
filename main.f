@@ -27,14 +27,14 @@ c --- Input ---
             READ(*,*)   NTRANS,  DT
             NI=64
         CASE ("simple")  
-            URFU=0.5
-            URFV=URFU
+            ! URFU=0.5
             NSWPU=4
             NSWPV=4
             NSWPP=8
             
             write(6,*)'N, URFU=?'
             read( 5,*) NI, URFU
+            URFV=URFU
       END SELECT
       NJ = NI
 c --- Setup ---
