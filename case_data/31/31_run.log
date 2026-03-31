@@ -1,0 +1,13 @@
+ N, URFU=?
+At line 37 of file main.f (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x1054a2103
+#1  0x1054a2cd7
+#2  0x1054a35a7
+#3  0x1055c36f3
+#4  0x1055bcedf
+#5  0x1055bd9eb
+#6  0x1047cd5f3
+#7  0x1047cd70b

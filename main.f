@@ -2,7 +2,7 @@
       USE global_data
 
 c --- Input ---
-      URFP = 0.3 ! pressure under-relaxation factor
+      
       NSWPP = 10000 ! max pressure iterations per time step
       SORMAX = 0.0001 ! poisson convergence criteria
 
@@ -14,7 +14,8 @@ c --- Input ---
       ! SOLVER_NAME = TRIM(SOLVER_NAME)
       ! SCHEME_NAME = TRIM(SCHEME_NAME)
       SOLVER_NAME='simple'
-      SCHEME_NAME='uds'
+      SCHEME_NAME='quick'
+      URFP = 0.1 ! pressure under-relaxation factor
       RE=1000
       MAXIT=999999
       SELECT CASE (SOLVER_NAME)

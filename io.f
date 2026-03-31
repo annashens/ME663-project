@@ -66,7 +66,8 @@ c
             WRITE(*,*) 'Selected Time scheme: ', TIME_SCHEME
             WRITE(*,*) 'DT=', DT
         CASE ('simple')
-            WRITE(*,*) 'URFU=',URFU
+            WRITE(*,*) 'URFU=',URFU, ', URFP=',URFP
+            
       END SELECT
       ! WRITE(*,*) 'NSWPP=', NSWPP
       ! WRITE(*,*) 'URFP=',URFP
