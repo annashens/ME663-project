@@ -24,8 +24,11 @@ c --- Input ---
             ! READ(*,*) TIME_SCHEME, DT
             
             TIME_SCHEME=2
-            WRITE(*,*) 'NTRANS, DT=?'
-            READ(*,*)   NTRANS,  DT
+            ! WRITE(*,*) 'NTRANS, DT=?'
+            ! READ(*,*)   NTRANS,  DT
+            WRITE(*,*) 'DT=?'
+            READ(*,*)    DT
+            NTRANS=7000
             NI=64
         CASE ("simple")  
             ! URFU=0.5
