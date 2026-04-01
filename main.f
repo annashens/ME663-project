@@ -13,7 +13,7 @@ c --- Input ---
       ! READ(*,*) SCHEME_NAME, SOLVER_NAME
       ! SOLVER_NAME = TRIM(SOLVER_NAME)
       ! SCHEME_NAME = TRIM(SCHEME_NAME)
-      SOLVER_NAME='simple'
+      SOLVER_NAME='fs'
       SCHEME_NAME='uds'
       URFP = 0.3 ! pressure under-relaxation factor
       RE=1000
@@ -28,8 +28,8 @@ c --- Input ---
             ! READ(*,*)   NTRANS,  DT
             WRITE(*,*) 'DT=?'
             READ(*,*)    DT
-            NTRANS=7000
-            NI=16
+            NTRANS=10000
+            NI=64
         CASE ("simple")  
             ! URFU=0.5
             NSWPU=4
