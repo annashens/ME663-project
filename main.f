@@ -13,9 +13,9 @@ c --- Input ---
       ! READ(*,*) SCHEME_NAME, SOLVER_NAME
       ! SOLVER_NAME = TRIM(SOLVER_NAME)
       ! SCHEME_NAME = TRIM(SCHEME_NAME)
-      SOLVER_NAME='fs'
+      SOLVER_NAME='simple'
       SCHEME_NAME='uds'
-      URFP = 0.1 ! pressure under-relaxation factor
+      URFP = 0.3 ! pressure under-relaxation factor
       RE=1000
       MAXIT=999999
       SELECT CASE (SOLVER_NAME)
@@ -35,9 +35,11 @@ c --- Input ---
             NSWPU=4
             NSWPV=4
             NSWPP=8
-            
-            write(6,*)'N, URFU=?'
-            read( 5,*) NI, URFU
+            write(6,*)'URFU=?'
+            read( 5,*) URFU
+            NI=64
+            ! write(6,*)'N, URFU=?'
+            ! read( 5,*) NI, URFU
             URFV=URFU
       END SELECT
       NJ = NI

@@ -67,6 +67,7 @@ class CavityCase:
         grab(r"DT=\s*([0-9.E+-]+)", float, "DT")
         grab(r"URFU=\s*([0-9.E+-]+)", float, "URFU")
         grab(r"Wall-clock time.*:\s*([0-9.E+-]+)", float, "clock_time")
+        
         meta["IT"] = df["IT"].max()
         return df, meta
     def _load_results(self, result_path):
