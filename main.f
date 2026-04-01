@@ -29,7 +29,7 @@ c --- Input ---
             WRITE(*,*) 'DT=?'
             READ(*,*)    DT
             NTRANS=7000
-            NI=64
+            NI=16
         CASE ("simple")  
             ! URFU=0.5
             NSWPU=4
