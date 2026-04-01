@@ -23,7 +23,7 @@ c --- Input ---
             ! WRITE(*,*) 'Enter time scheme (1 = Euler, 2 = Adams-Bashforth), DT:'
             ! READ(*,*) TIME_SCHEME, DT
             
-            TIME_SCHEME=2
+            TIME_SCHEME=1
             ! WRITE(*,*) 'NTRANS, DT=?'
             ! READ(*,*)   NTRANS,  DT
             WRITE(*,*) 'DT=?'
