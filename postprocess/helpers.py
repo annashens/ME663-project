@@ -353,12 +353,17 @@ class CavityCase:
         return fig,ax
 class CaseManager:
     ghia_psi_min, ghia_psi_max = -0.117929, 0.00175102
-    def __init__(self, case_numbers, root_folder="../case_data/"):
+    def __init__(self, case_numbers, root_folder="../case_data/", RE=None, solution_method=None, N=None,conv_scheme=None, time_scheme=None, label=None):
         self.cases = {}
         for num in case_numbers:
             case = CavityCase(num)  # Your existing case class
             self.cases[num] = case
-
+        self.RE = RE
+        self.solution_method = solution_method
+        self.N = N
+        self.conv_scheme = conv_scheme
+        self.time_scheme = time_scheme
+        self.label = label
     def collect_vortex_strengths(self):
         primary_records = []
         secondary_records = []
@@ -421,7 +426,7 @@ class CaseManager:
         )
         conv_summary['case'] = conv_summary['case'].astype(int)
         conv_summary = conv_summary.set_index('case')
-        print(conv_summary)
+        # print(conv_summary)
 
         # join with meta dataframe
 
