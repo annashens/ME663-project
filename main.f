@@ -13,8 +13,8 @@ c --- Input ---
       ! READ(*,*) SCHEME_NAME, SOLVER_NAME
       ! SOLVER_NAME = TRIM(SOLVER_NAME)
       ! SCHEME_NAME = TRIM(SCHEME_NAME)
-      SOLVER_NAME='simple'
-      SCHEME_NAME='quick'
+      SOLVER_NAME='fs'
+      SCHEME_NAME='uds'
       URFP = 0.1 ! pressure under-relaxation factor
       RE=1000
       MAXIT=999999

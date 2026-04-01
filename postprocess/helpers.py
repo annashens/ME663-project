@@ -7,7 +7,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from IPython.display import HTML
 from matplotlib.animation import FuncAnimation
 import os
-
+from matplotlib.animation import FFMpegWriter
 class CavityCase:
     root_folder='../case_data/'
     def __init__(self, case_number):
@@ -27,6 +27,8 @@ class CavityCase:
             self.time_scheme = self.meta["time_scheme"]
             self.dt = self.meta["DT"]
             self.snapshots, self.snap_times = self._load_snapshots()
+        elif self.meta["solution_method"] == "simple":
+            self.solution_method="SIMPLE"
         # Extract core fields (assumes names U, V)
         self.U = self.ds["U"].values
         self.V = self.ds["V"].values
@@ -176,12 +178,12 @@ class CavityCase:
             ax.set_aspect('equal', adjustable='box')
         fig.tight_layout()
         return fig, axs
-    def animate(self, interval=300, step=3, density=1, scale=2, cmap="plasma", saveFig = False):
+    def animate(self, interval=300, step=3, density=1, scale=2, cmap="plasma", last=5, saveFig = False, title=None):
         if not hasattr(self, "snapshots") or len(self.snapshots) == 0:
             raise ValueError("No snapshots loaded.")
 
         fig, axs = plt.subplots(1, 2, figsize=(10, 4.5))
-
+        snap_times = self.snap_times[:last]
         def update(i):
             for ax in axs:
                 ax.clear()
@@ -215,7 +217,8 @@ class CavityCase:
             t = self.snap_times[i]
             axs[0].set_title(f"Streamlines (t={t:.0f})")
             axs[1].set_title(f"Velocity Field (t={t:.0f})")
-
+            if title is not None:
+                fig.suptitle(title)
             # Formatting
             for ax in axs:
                 ax.set_xlim(self.x.min(), self.x.max())
@@ -226,13 +229,17 @@ class CavityCase:
 
         anim = FuncAnimation(
             fig, update,
-            frames=len(self.snapshots),
+            frames=len(snap_times),
             interval=interval
         )
 
         plt.close(fig)  # prevent duplicate static plot
         if saveFig:
-            anim.save(self.case_folder+"animation.gif", writer="pillow", fps=1000/interval)
+            # anim.save(self.case_folder+"animation.gif", writer="pillow", fps=1000/interval)
+
+            fps = 1000 / interval  # keep your frame rate calculation
+            writer = FFMpegWriter(fps=fps)
+            anim.save(self.case_folder + "animation.mp4", writer=writer)
         return HTML(anim.to_jshtml())
     def v_horizontal_slice(self, x=0.5):
         return self.ds.V.sel(x=x, method='nearest')
