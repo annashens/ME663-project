@@ -1,0 +1,14 @@
+ (uds/quick), (fs/simple)=?
+ MAXIT, RE, N=?
+ URFU=?
+          20           9  0.150044590       9.55654457E-02   7.54691809E-02
+          40           9  0.126089171      0.150960803       8.86903107E-02
+          60           9  0.157671511      0.154157534       5.91512360E-02
+          80           9  0.182034329      0.107177347       7.56149739E-02
+         100           9  0.169801205       4.07182314E-02   8.70160535E-02
+         101           9  0.169801205       4.07182314E-02   8.70160535E-02
+ Solver: simple    , Convection scheme: uds       
+ RE=   100.000000     , N=          64
+ URFU=  0.200000003     , URFP=  0.300000012    
+ Wall-clock time (s):   0.298458993    
+Note: The following floating-point exceptions are signalling: IEEE_DIVIDE_BY_ZERO IEEE_UNDERFLOW_FLAG
