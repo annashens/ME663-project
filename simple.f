@@ -11,7 +11,7 @@ c
       CALL SIMPLE_CALCP
 c
       IF(MOD(IT,20).EQ.0) THEN
-      WRITE(6,51)IT,RESORU,RESORV,RESORM
+      WRITE(*,*)IT,N, RESORU,RESORV,RESORM
       END IF
 c
 !define convergence criterion
@@ -19,7 +19,7 @@ c
 c
       END DO
  1000 CONTINUE
-      WRITE(6,51)IT,RESORU,RESORV,RESORM
+      WRITE(*,*)IT,N, RESORU,RESORV,RESORM
  50   FORMAT(8F7.3)
  51   FORMAT(I5,3F14.5)
       RETURN

@@ -2,34 +2,25 @@
       USE global_data
 
 c --- Input ---
-      
       NSWPP = 10000 ! max pressure iterations per time step
       SORMAX = 0.0001 ! poisson convergence criteria
-
-      ! WRITE(6,*) 'MAXIT, RE, N=?'
-      ! READ(5,*) MAXIT,  RE, NI
-      
-      ! WRITE(*,*) '(uds/quick), (fs/simple)=?'
-      ! READ(*,*) SCHEME_NAME, SOLVER_NAME
-      ! SOLVER_NAME = TRIM(SOLVER_NAME)
-      ! SCHEME_NAME = TRIM(SCHEME_NAME)
-      SOLVER_NAME='fs'
-      SCHEME_NAME='uds'
       URFP = 0.3 ! pressure under-relaxation factor
-      RE=1000
-      MAXIT=999999
+
+      WRITE(*,*) '(uds/quick), (fs/simple)=?'
+      READ(*,*) SCHEME_NAME, SOLVER_NAME
+
+      WRITE(6,*) 'MAXIT, RE, N=?'
+      READ(5,*) MAXIT,  RE, NI
+
+      SOLVER_NAME = TRIM(SOLVER_NAME)
+      SCHEME_NAME = TRIM(SCHEME_NAME)
+
       SELECT CASE (SOLVER_NAME)
         CASE ("fs")
-            ! WRITE(*,*) 'Enter time scheme (1 = Euler, 2 = Adams-Bashforth), DT:'
-            ! READ(*,*) TIME_SCHEME, DT
-            
-            TIME_SCHEME=1
-            ! WRITE(*,*) 'NTRANS, DT=?'
-            ! READ(*,*)   NTRANS,  DT
-            WRITE(*,*) 'DT=?'
-            READ(*,*)    DT
+            WRITE(*,*) 'Enter time scheme (1 = Euler, 2 = Adams-Bashforth), DT:'
+            READ(*,*) TIME_SCHEME, DT
             NTRANS=10000
-            NI=64
+            ! NI=128
         CASE ("simple")  
             ! URFU=0.5
             NSWPU=4
@@ -37,9 +28,6 @@ c --- Input ---
             NSWPP=8
             write(6,*)'URFU=?'
             read( 5,*) URFU
-            NI=64
-            ! write(6,*)'N, URFU=?'
-            ! read( 5,*) NI, URFU
             URFV=URFU
       END SELECT
       NJ = NI
