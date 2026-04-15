@@ -7,7 +7,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from IPython.display import HTML
 from matplotlib.animation import FuncAnimation
 import os
-
+from matplotlib.animation import FFMpegWriter
 class CavityCase:
     root_folder='../case_data/'
     def __init__(self, case_number):
@@ -27,6 +27,8 @@ class CavityCase:
             self.time_scheme = self.meta["time_scheme"]
             self.dt = self.meta["DT"]
             self.snapshots, self.snap_times = self._load_snapshots()
+        elif self.meta["solution_method"] == "simple":
+            self.solution_method="SIMPLE"
         # Extract core fields (assumes names U, V)
         self.U = self.ds["U"].values
         self.V = self.ds["V"].values
@@ -65,6 +67,7 @@ class CavityCase:
         grab(r"DT=\s*([0-9.E+-]+)", float, "DT")
         grab(r"URFU=\s*([0-9.E+-]+)", float, "URFU")
         grab(r"Wall-clock time.*:\s*([0-9.E+-]+)", float, "clock_time")
+        
         meta["IT"] = df["IT"].max()
         return df, meta
     def _load_results(self, result_path):
@@ -176,12 +179,12 @@ class CavityCase:
             ax.set_aspect('equal', adjustable='box')
         fig.tight_layout()
         return fig, axs
-    def animate(self, interval=300, step=3, density=1, scale=2, cmap="plasma", saveFig = False):
+    def animate(self, interval=300, step=3, density=1, scale=2, cmap="plasma", last=5, saveFig = False, title=None):
         if not hasattr(self, "snapshots") or len(self.snapshots) == 0:
             raise ValueError("No snapshots loaded.")
 
         fig, axs = plt.subplots(1, 2, figsize=(10, 4.5))
-
+        snap_times = self.snap_times[:last]
         def update(i):
             for ax in axs:
                 ax.clear()
@@ -215,7 +218,8 @@ class CavityCase:
             t = self.snap_times[i]
             axs[0].set_title(f"Streamlines (t={t:.0f})")
             axs[1].set_title(f"Velocity Field (t={t:.0f})")
-
+            if title is not None:
+                fig.suptitle(title)
             # Formatting
             for ax in axs:
                 ax.set_xlim(self.x.min(), self.x.max())
@@ -226,13 +230,17 @@ class CavityCase:
 
         anim = FuncAnimation(
             fig, update,
-            frames=len(self.snapshots),
+            frames=len(snap_times),
             interval=interval
         )
 
         plt.close(fig)  # prevent duplicate static plot
         if saveFig:
-            anim.save(self.case_folder+"animation.gif", writer="pillow", fps=1000/interval)
+            # anim.save(self.case_folder+"animation.gif", writer="pillow", fps=1000/interval)
+
+            fps = 1000 / interval  # keep your frame rate calculation
+            writer = FFMpegWriter(fps=fps)
+            anim.save(self.case_folder + "animation.mp4", writer=writer)
         return HTML(anim.to_jshtml())
     def v_horizontal_slice(self, x=0.5):
         return self.ds.V.sel(x=x, method='nearest')
@@ -346,12 +354,17 @@ class CavityCase:
         return fig,ax
 class CaseManager:
     ghia_psi_min, ghia_psi_max = -0.117929, 0.00175102
-    def __init__(self, case_numbers, root_folder="../case_data/"):
+    def __init__(self, case_numbers, root_folder="../case_data/", RE=None, solution_method=None, N=None,conv_scheme=None, time_scheme=None, label=None):
         self.cases = {}
         for num in case_numbers:
             case = CavityCase(num)  # Your existing case class
             self.cases[num] = case
-
+        self.RE = RE
+        self.solution_method = solution_method
+        self.N = N
+        self.conv_scheme = conv_scheme
+        self.time_scheme = time_scheme
+        self.label = label
     def collect_vortex_strengths(self):
         primary_records = []
         secondary_records = []
@@ -414,7 +427,7 @@ class CaseManager:
         )
         conv_summary['case'] = conv_summary['case'].astype(int)
         conv_summary = conv_summary.set_index('case')
-        print(conv_summary)
+        # print(conv_summary)
 
         # join with meta dataframe
 

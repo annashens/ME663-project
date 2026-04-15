@@ -19,5 +19,5 @@ cavity
 
 # VS Code settings (optional)
 .vscode/
-
+_snap_*
 .DS_Store
